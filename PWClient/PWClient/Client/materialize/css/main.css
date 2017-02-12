@@ -1,2 +1,12 @@
-﻿body {
+﻿nav ul li {
+  padding: 0px 64px 0px 64px;
+}
+.fullwidth {
+    width:100%;
+}
+.appcolor {
+    background-color:#9c3100;
+}
+.appcolor-text{
+    color:#9c3100;
 }

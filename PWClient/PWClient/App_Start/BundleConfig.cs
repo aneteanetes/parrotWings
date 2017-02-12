@@ -12,7 +12,7 @@ namespace PWClient
                         "~/Client/js/jquery-{version}.js"));
             bundles.Add(new ScriptBundle("~/js/lib").Include(
                         "~/Client/js/respond.js",
-                        "~/Client/ts/app.js",
+                        "~/Client/ts/compiled.js",
                         "~/Client/materialize/js/materialize.js"));
 
 

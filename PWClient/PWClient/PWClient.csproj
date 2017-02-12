@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,6 +21,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -189,6 +191,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Server\Controllers\AccountController.cs" />
     <Compile Include="Server\Controllers\AppController.cs" />
+    <Compile Include="Server\Controllers\IdentityController.cs" />
+    <Compile Include="Server\Controllers\TemplatesController.cs" />
     <Compile Include="Server\Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -202,7 +206,9 @@
     <Compile Include="Server\Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client\img\icon.png" />
     <Content Include="Client\materialize\css\main.css" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Client\materialize\fonts\roboto\Roboto-Bold.eot" />
     <Content Include="Client\materialize\fonts\roboto\Roboto-Bold.ttf" />
@@ -256,19 +262,39 @@
     <Content Include="Server\Views\App\Index.cshtml" />
     <Content Include="Server\Views\Shared\Error.cshtml" />
     <Content Include="Server\Views\Shared\_Layout.cshtml" />
+    <Content Include="Server\Views\Templates\LogIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Client\ts\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Client\ts\abstract\HtmlPusher.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\ServerLinked.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\TemplateLoader.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\ValidatedViewModel.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\ViewModel.ts" />
+    <TypeScriptCompile Include="Client\ts\account.ts" />
+    <TypeScriptCompile Include="Client\ts\app.ts" />
+    <TypeScriptCompile Include="Client\ts\interfaces\jqueryPromise.ts" />
+    <TypeScriptCompile Include="Client\ts\models\Identity.ts" />
+    <TypeScriptCompile Include="Client\ts\utility\AttachType.ts" />
+    <TypeScriptCompile Include="Client\ts\utility\Validator.ts" />
+    <TypeScriptCompile Include="Client\ts\_references.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES6</TypeScriptTarget>
+    <TypeScriptOutFile>Client/ts/compiled.js</TypeScriptOutFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
