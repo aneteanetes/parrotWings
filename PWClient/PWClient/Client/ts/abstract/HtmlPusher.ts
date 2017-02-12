@@ -7,7 +7,7 @@
             case AttachType.Before: target.before(html); break;
             case AttachType.Append: target.append(html); break;
             case AttachType.Prepend: target.prepend(html); break;
-            case AttachType.Inside: target.html(html.wrapAll($('<div>')).parent().html()); break;
+            case AttachType.Inside: target.html(''); target.append(html); break;
             case AttachType.Replace: target.replaceWith(html); break;
             default: break;
         }

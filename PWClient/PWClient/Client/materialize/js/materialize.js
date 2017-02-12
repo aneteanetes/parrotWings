@@ -2993,29 +2993,29 @@ if (jQuery) {
     });
 
     window.validate_field = function(object) {
-      var hasLength = object.attr('data-length') !== undefined;
-      var lenAttr = parseInt(object.attr('data-length'));
-      var len = object.val().length;
+      //var hasLength = object.attr('data-length') !== undefined;
+      //var lenAttr = parseInt(object.attr('data-length'));
+      //var len = object.val().length;
 
-      if (object.val().length === 0 && object[0].validity.badInput === false) {
-        if (object.hasClass('validate')) {
-          object.removeClass('valid');
-          object.removeClass('invalid');
-        }
-      }
-      else {
-        if (object.hasClass('validate')) {
-          // Check for character counter attributes
-          if ((object.is(':valid') && hasLength && (len <= lenAttr)) || (object.is(':valid') && !hasLength)) {
-            object.removeClass('invalid');
-            object.addClass('valid');
-          }
-          else {
-            object.removeClass('valid');
-            object.addClass('invalid');
-          }
-        }
-      }
+      //if (object.val().length === 0 && object[0].validity.badInput === false) {
+      //  if (object.hasClass('validate')) {
+      //    object.removeClass('valid');
+      //    object.removeClass('invalid');
+      //  }
+      //}
+      //else {
+      //  if (object.hasClass('validate')) {
+      //    // Check for character counter attributes
+      //    if ((object.is(':valid') && hasLength && (len <= lenAttr)) || (object.is(':valid') && !hasLength)) {
+      //      object.removeClass('invalid');
+      //      object.addClass('valid');
+      //    }
+      //    else {
+      //      object.removeClass('valid');
+      //      object.addClass('invalid');
+      //    }
+      //  }
+      //}
     };
 
     // Radio and Checkbox focus class

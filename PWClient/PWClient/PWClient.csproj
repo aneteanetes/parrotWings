@@ -189,6 +189,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Migrations\201702121854130_InitialCreate.cs" />
+    <Compile Include="Migrations\201702121854130_InitialCreate.Designer.cs">
+      <DependentUpon>201702121854130_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702121927051_user_name.cs" />
+    <Compile Include="Migrations\201702121927051_user_name.Designer.cs">
+      <DependentUpon>201702121927051_user_name.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Server\Controllers\AccountController.cs" />
     <Compile Include="Server\Controllers\AppController.cs" />
     <Compile Include="Server\Controllers\IdentityController.cs" />
@@ -262,6 +271,7 @@
     <Content Include="Server\Views\App\Index.cshtml" />
     <Content Include="Server\Views\Shared\Error.cshtml" />
     <Content Include="Server\Views\Shared\_Layout.cshtml" />
+    <Content Include="Server\Views\Templates\Registration.cshtml" />
     <Content Include="Server\Views\Templates\LogIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -274,16 +284,28 @@
     <TypeScriptCompile Include="Client\ts\abstract\HtmlPusher.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\ServerLinked.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\TemplateLoader.ts" />
-    <TypeScriptCompile Include="Client\ts\abstract\ValidatedViewModel.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\ValidationState.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\ViewModel.ts" />
     <TypeScriptCompile Include="Client\ts\account.ts" />
     <TypeScriptCompile Include="Client\ts\app.ts" />
     <TypeScriptCompile Include="Client\ts\interfaces\jqueryPromise.ts" />
+    <TypeScriptCompile Include="Client\ts\interfaces\Materialize.ts" />
+    <TypeScriptCompile Include="Client\ts\interfaces\string.ts" />
+    <TypeScriptCompile Include="Client\ts\models\Dashboard.ts" />
+    <TypeScriptCompile Include="Client\ts\models\RegisterIdentity.ts" />
     <TypeScriptCompile Include="Client\ts\models\Identity.ts" />
     <TypeScriptCompile Include="Client\ts\utility\AttachType.ts" />
     <TypeScriptCompile Include="Client\ts\utility\Validator.ts" />
     <TypeScriptCompile Include="Client\ts\_references.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201702121854130_InitialCreate.resx">
+      <DependentUpon>201702121854130_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702121927051_user_name.resx">
+      <DependentUpon>201702121927051_user_name.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

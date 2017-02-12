@@ -10,6 +10,10 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using PWClient.Providers;
 using PWClient.Models;
+using System.Web.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Net.Http.Formatting;
 
 namespace PWClient
 {
@@ -28,8 +32,7 @@ namespace PWClient
 
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
-            app.UseCookieAuthentication(new CookieAuthenticationOptions());
-            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+            //app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Configure the application for OAuth based flow
             PublicClientId = "self";
@@ -44,6 +47,10 @@ namespace PWClient
 
             // Enable the application to use bearer tokens to authenticate users
             app.UseOAuthBearerTokens(OAuthOptions);
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie
+            });
 
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(
