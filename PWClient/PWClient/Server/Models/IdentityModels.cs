@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using PWClient.Server.Models;
+using System.Data.Entity;
 
 namespace PWClient.Models
 {
@@ -26,6 +28,7 @@ namespace PWClient.Models
         }
 
         public string Name { get; set; }
+        public int PW { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -39,5 +42,7 @@ namespace PWClient.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }

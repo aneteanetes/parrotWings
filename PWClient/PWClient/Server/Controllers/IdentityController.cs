@@ -1,4 +1,4 @@
-﻿using PWClient.Models;
+﻿using PWClient.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,12 @@ namespace PWClient.Server.Controllers
         public bool check()
         {
             return User.Identity.IsAuthenticated;
+        }
+
+        [Authorize]
+        public string name()
+        {
+            return User.Identity.Name;
         }
     }
 }

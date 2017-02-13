@@ -9,11 +9,12 @@ using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using PWClient.Providers;
-using PWClient.Models;
+using PWClient.ViewModels;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Net.Http.Formatting;
+using PWClient.Models;
 
 namespace PWClient
 {

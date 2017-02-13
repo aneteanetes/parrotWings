@@ -13,12 +13,13 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using PWClient.Models;
+using PWClient.ViewModels;
 using PWClient.Providers;
 using PWClient.Results;
 using Microsoft.Owin;
 using Microsoft.Owin.Host.SystemWeb;
 using System.Text;
+using PWClient.Models;
 
 namespace PWClient.Controllers
 {
@@ -331,7 +332,7 @@ namespace PWClient.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.Name };
+            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Name = model.Name, PW = 500 };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
@@ -348,35 +349,7 @@ namespace PWClient.Controllers
         [Route("Signin")]
         public string SignIn(SignInModel model)
         {
-            ClaimsIdentity identity = new ClaimsIdentity(new List<Claim>()
-                {
-                    new Claim("userName",model.Email)
-                });
-            Authentication.SignIn(identity);
-
-            return "";
-            //// Invoke the "token" OWIN service to perform the login: /api/token
-            //// Ugly hack: I use a server-side HTTP POST because I cannot directly invoke the service (it is deeply hidden in the OAuthAuthorizationServerHandler class)
-            //var request = HttpContext.Current.Request;
-            //var tokenServiceUrl = request.Url.GetLeftPart(UriPartial.Authority) + "/Token";
-            //using (var client = new HttpClient())
-            //{
-            //    var requestParams = new List<KeyValuePair<string, string>>
-            //{
-            //    new KeyValuePair<string, string>("grant_type", "password"),
-            //    new KeyValuePair<string, string>("username", model.Email),
-            //    new KeyValuePair<string, string>("password", model.Password)
-            //};
-            //    var requestParamsFormUrlEncoded = new FormUrlEncodedContent(requestParams);
-            //    var tokenServiceResponse = await client.PostAsync(tokenServiceUrl, requestParamsFormUrlEncoded);
-            //    var responseString = await tokenServiceResponse.Content.ReadAsStringAsync();
-            //    var responseCode = tokenServiceResponse.StatusCode;
-            //    var responseMsg = new HttpResponseMessage(responseCode)
-            //    {
-            //        Content = new StringContent(responseString, Encoding.UTF8, "application/json")
-            //    };
-            //    return responseMsg;
-            //}
+            return "validated";
         }
 
         // POST api/Account/RegisterExternal

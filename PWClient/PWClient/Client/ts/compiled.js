@@ -41,7 +41,6 @@ class JQueryPromise {
 class HtmlPusher {
     pushOnScreen(html, attach) {
         var target = $('.screen');
-        debugger;
         switch (attach) {
             case AttachType.After:
                 target.after(html);
@@ -66,16 +65,95 @@ class HtmlPusher {
         }
     }
 }
-class ServerLinked extends HtmlPusher {
+class Request extends HtmlPusher {
+    constructor(error) {
+        super();
+        this.errorCatch = error;
+    }
     request(url, data) {
-        var response = $.post(url, data);
-        response.then(() => { }, xhr => {
-            if (xhr.status == 400)
-                $.each(JSON.parse(xhr.responseText).ModelState[""], (i, v) => Materialize.toast(v, 4000, 'red'));
-            if (xhr.status == 401)
-                Materialize.toast('Wrong email or password!', 4000, 'red');
+        var response = $.ajax({
+            url: url,
+            type: 'post',
+            data: data,
+            beforeSend: function (xhr, settings) { xhr.setRequestHeader('Authorization', 'Bearer ' + globalAuthToken); },
+            error: (xhr, z, u) => { console.log(xhr); console.log(z); console.log(u); debugger; this.errorCatch(xhr); }
         });
         return response;
+    }
+}
+class Binding extends Request {
+    constructor(view) {
+        super((xhr) => { });
+        view.find('[data-binding-field]').each((i, v) => {
+            var $jE = $(v);
+            var field = $jE.attr('data-binding-field');
+            var stageAttr = $jE.attr('data-binding-stage');
+            Object.defineProperty(this, field, {
+                set: (val) => {
+                    if (stageAttr == null || stageAttr == 'text')
+                        $jE.text(val);
+                    else
+                        $jE.html(val);
+                }
+            });
+        });
+        view.find('[data-binding-action]').each((i, e) => {
+            var jB = $(e);
+            var action = this[jB.attr('data-binding-action')];
+            if (action != null)
+                jB.click(x => {
+                    action(this);
+                });
+        });
+    }
+    execute() {
+        var fieldUrl = this.fieldUrlCollection();
+        $.each(fieldUrl, (i, v) => {
+            this.fieldBind(v);
+        });
+    }
+    fieldBind(binding) {
+        var promise = this.request(binding.url);
+        promise.then((x) => {
+            if (binding.datahandler != null)
+                binding.datahandler(this, x);
+            else
+                this[binding.field] = x || '';
+        }, (x) => {
+            this[binding.field] = '';
+        });
+    }
+}
+class BindingField {
+    constructor(fields) {
+        if (fields)
+            Object.assign(this, fields);
+    }
+}
+class ServerLinked extends Request {
+    constructor() {
+        super((xhr) => {
+            if (xhr != null) {
+                if (xhr.status == 400) {
+                    var errObj = JSON.parse(xhr.responseText);
+                    if (errObj.ModelState != null)
+                        $.each(errObj.ModelState[""], (i, v) => Materialize.toast(v, 4000, 'red'));
+                    else
+                        Materialize.toast(errObj.error_description, 4000, 'red');
+                }
+                if (xhr.status == 401)
+                    Materialize.toast('Wrong email or password!', 4000, 'red');
+            }
+        });
+    }
+    request(url, data) {
+        var request = super.request(url, data);
+        request.done(() => {
+            $.each(globalBindings, (i, v) => {
+                v.execute();
+            });
+        });
+        return request;
     }
 }
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -102,7 +180,9 @@ var ValidationState;
 class ViewModel extends TemplateLoader {
     constructor(view) {
         super();
-        view.find('input').each((i, e) => {
+        view.filter('input')
+            .add(view.find('input'))
+            .each((i, e) => {
             var jE = $(e);
             jE.change(x => {
                 var val = jE.val();
@@ -128,7 +208,9 @@ class ViewModel extends TemplateLoader {
                 jE.addClass('valid');
             });
         });
-        view.find('button:not([type="submit"])').each((i, e) => {
+        view.filter('button:not([type="submit"])')
+            .add(view.find('button:not([type="submit"])'))
+            .each((i, e) => {
             var jB = $(e);
             var attr = jB.attr('data-model-action');
             if (attr != null) {
@@ -151,6 +233,7 @@ class ViewModel extends TemplateLoader {
     submitting() {
         return __awaiter(this, void 0, void 0, function* () {
             var validator = this.modelValidation();
+            debugger;
             if (validator.validating_function(this)) {
                 var response = yield this.request(this.submitUrl, this);
                 debugger;
@@ -188,23 +271,30 @@ class Identity extends ViewModel {
                 && !(model.Password || '').isNullOrWhitespace();
         }, 'All fields required!');
     }
-    submit(response) {
+    submit() { this.login(this); }
+    auth($this) {
         return __awaiter(this, void 0, void 0, function* () {
-            var token = yield this.request('/token', {
+            var model = $this;
+            var submitValidator = model.modelValidation();
+            if (!submitValidator.validating_function(model)) {
+                Materialize.toast(submitValidator.error_msg, 3000, 'red');
+                return;
+            }
+            var token = yield model.request('/token', {
                 "grant_type": "password",
-                "username": this.Email,
-                "password": this.Password
+                "username": model.Email,
+                "password": model.Password
             });
-            debugger;
-            console.log(token);
-            debugger;
+            globalAuthToken = token.access_token;
             var am = new AccountManager();
             if (yield am.isLogged()) {
-                var $template = $(yield this.fromTemplate('Dashboard'));
+                var $template = $(yield model.fromTemplate('Dashboard'));
                 new Dashboard($template);
             }
-            else
-                this.login(this);
+            else {
+                Materialize.toast('Authorization not accepted!', 6000, 'red');
+                model.login(model);
+            }
         });
     }
     register($this) {
@@ -214,6 +304,7 @@ class Identity extends ViewModel {
         });
     }
     login($this) {
+        debugger;
         $this.fromTemplate('LogIn').then(x => {
             var $template = $(x);
             new Identity($template);
@@ -240,6 +331,61 @@ class RegisterIdentity extends Identity {
         }, 'All fields required!');
     }
 }
+class NavBinding extends Binding {
+    constructor() {
+        super($('.nav-wrapper'));
+    }
+    fieldUrlCollection() {
+        return [
+            new BindingField({ field: 'username', url: '/api/identity/name' }),
+            new BindingField({ field: 'pw', url: '/api/balance/mybalance/' })
+        ];
+    }
+    trasactions($this) {
+    }
+}
+class Transactions extends ViewModel {
+    constructor(view) {
+        super(view);
+        globalBindings.push(new TransactionsBinding());
+        this.set_validation(this.pwValidator);
+        this.loadUserList(view);
+    }
+    loadUserList(view) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var data = yield this.request('/api/users/availablecustomers');
+            var processedData = {};
+            $.each(data, (i, v) => {
+                processedData[v] = null;
+            });
+            view.find('input.autocomplete').autocomplete({
+                data: processedData,
+                limit: 5
+            });
+        });
+    }
+    get pwValidator() {
+        return new Validator('PW', x => x > 0, 'Amount should be a positive number!');
+    }
+    modelValidation() {
+        return new Validator('Transaction', x => {
+            var model = x;
+            return !(model.Username || '').isNullOrWhitespace()
+                && model.PW > 0;
+        }, 'All fields required!');
+    }
+    backtodashboard($this) {
+        return __awaiter(this, void 0, void 0, function* () {
+            debugger;
+            var model = $this;
+            var $template = $(yield model.fromTemplate('Dashboard'));
+            new Dashboard($template);
+        });
+    }
+    submit() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+}
 class AccountManager extends TemplateLoader {
     isLogged() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -264,6 +410,7 @@ class App {
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             //var am = new AccountManager();
+            globalBindings.push(new NavBinding());
             var logged = yield globalAm.isLogged();
             if (!logged)
                 globalAm.logInForm();
@@ -275,6 +422,8 @@ class App {
 }
 var screenViewModel = null;
 var preScreenViewModel = null;
+var globalAuthToken = '';
+var globalBindings = new Array();
 var globalAm = new AccountManager();
 new App()
     .start();
@@ -283,6 +432,8 @@ new App()
 /// <reference path="utility/attachtype.ts" />
 /// <reference path="interfaces/jquerypromise.ts" />
 /// <reference path="abstract/htmlpusher.ts" />
+/// <reference path="abstract/request.ts" />
+/// <reference path="abstract/binding.ts" />
 /// <reference path="abstract/serverlinked.ts" />
 /// <reference path="abstract/templateloader.ts" />
 /// <reference path="abstract/validationstate.ts" />
@@ -290,8 +441,47 @@ new App()
 /// <reference path="utility/validator.ts" />
 /// <reference path="models/identity.ts" />
 /// <reference path="models/registeridentity.ts" />
+/// <reference path="bindings/navbinding.ts" />
+/// <reference path="models/transactions.ts" />
 /// <reference path="account.ts" />
 /// <reference path="app.ts" />
+class TransactionsBinding extends Binding {
+    constructor() {
+        super($('.transactions-ui'));
+    }
+    fieldUrlCollection() {
+        var handler = this.transactionsHandler;
+        return [
+            new BindingField({
+                field: 'usertransactions',
+                url: '/api/balance/mytransactions/',
+                datahandler: handler
+            })
+        ];
+    }
+    transactionsHandler($this, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var html = $();
+            //var concat_data = data.credits.concat(data.debits) as any[];
+            for (let i = 0; i < data.length; i++) {
+                var transaction = data[i];
+                var template = yield $this.request('/templates/get/', { name: 'TransactionHistory' });
+                template = template.replace('{{Operation}}', transaction.operation == 0 ? "Debit" : "Credit");
+                template = template.replace('{{From/To}}', transaction.operation == 0 ? "To" : "From");
+                template = template.replace('{{Person}}', transaction.UserName);
+                template = template.replace('{{OperationSign}}', transaction.operation == 0 ? "-" : "+");
+                template = template.replace('{{PW}}', transaction.amount);
+                template = template.replace('{{When}}', transaction.when);
+                template = template.replace('{{Total}}', transaction.total);
+                html = html.add($(template));
+            }
+            debugger;
+            $this["usertransactions"] = html.wrapAll($("<div>")).parent().html();
+        });
+    }
+    trasactions($this) {
+    }
+}
 class Dashboard extends ViewModel {
     modelValidation() {
         return new Validator('Dashboard', x => {
@@ -299,7 +489,22 @@ class Dashboard extends ViewModel {
         }, 'Dashboard not exists!');
     }
     submit() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    transactions($this) {
         return __awaiter(this, void 0, void 0, function* () {
+            var model = $this;
+            var $template = $(yield model.fromTemplate('Transactions'));
+            new Transactions($template);
+        });
+    }
+    logout($this) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var model = $this;
+            var loggedoff = yield model.request('/api/account/logout');
+            globalAuthToken = '';
+            var $template = $(yield model.fromTemplate('LogIn'));
+            new Identity($template);
         });
     }
 }

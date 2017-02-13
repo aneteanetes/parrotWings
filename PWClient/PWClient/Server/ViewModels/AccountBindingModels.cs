@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace PWClient.Models
+namespace PWClient.ViewModels
 {
     // Models used as parameters to AccountController actions.
 

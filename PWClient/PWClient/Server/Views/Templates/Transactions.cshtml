@@ -1,0 +1,23 @@
+﻿@{Layout = null;}
+<button data-model-action="backtodashboard" class="btn btn-large appcolor right">Back</button>
+<h3 class="appcolor-text">Transactions</h3>
+<div class="row transactions-ui">
+    <div class="col s12 m6">
+        <h5>New transaction</h5>
+        <hr />
+        <div class="fullwidth input-field">
+            <input type="text" name="Username" value="" class="autocomplete">
+            <label for="Username">For user</label>
+        </div>
+        <div class="fullwidth input-field">
+            <input type="number" name="PW" value="" class="autocomplete">
+            <label for="PW">Amount</label>
+        </div>
+        <br />
+        <button type="submit" data-controller-action="api/balance/transaction" class="btn btn-large appcolor fullwidth">Send</button>
+    </div>
+    <div class="col s12 m6">
+        <h5>History</h5>
+        <div data-binding-field="usertransactions" data-binding-stage="html"></div>
+    </div>
+</div>

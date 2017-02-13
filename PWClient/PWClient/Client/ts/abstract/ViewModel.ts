@@ -6,7 +6,9 @@
 
     constructor(view: JQuery) {
         super();
-        view.find('input').each((i, e) => {
+        view.filter('input')
+            .add(view.find('input'))
+            .each((i, e) => {
             var jE = $(e);
             jE.change(x => {
                 var val = jE.val();
@@ -31,8 +33,9 @@
                 jE.addClass('valid');
             });
         });
-
-        view.find('button:not([type="submit"])').each((i, e) => {
+        view.filter('button:not([type="submit"])')
+            .add(view.find('button:not([type="submit"])'))
+            .each((i, e) => {
             var jB = $(e);
             var attr = jB.attr('data-model-action');
             if (attr != null) {
@@ -57,6 +60,7 @@
     private submitUrl: string;
     private async submitting() {
         var validator = this.modelValidation();
+        debugger;
         if (validator.validating_function(this)) {
             var response = await this.request<any>(this.submitUrl, this);            
             debugger;

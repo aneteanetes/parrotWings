@@ -22,21 +22,32 @@
         }, 'All fields required!');
     }
 
-    async submit(response: any) {
-        var token = await this.request<any>('/token', {
+    submit() { this.login(this); }
+    
+    async auth($this) {
+        var model = $this as Identity;
+
+        var submitValidator = model.modelValidation();        
+        if (!submitValidator.validating_function(model)) {
+            Materialize.toast(submitValidator.error_msg, 3000, 'red');
+            return;
+        }
+
+        var token = await model.request<any>('/token', {
             "grant_type": "password",
-            "username": this.Email,
-            "password": this.Password
+            "username": model.Email,
+            "password": model.Password
         });
-        debugger;
-        console.log(token);
-        debugger;
+        globalAuthToken = token.access_token;
+
         var am = new AccountManager();
         if (await am.isLogged()) {
-            var $template = $(await this.fromTemplate('Dashboard'));
+            var $template = $(await model.fromTemplate('Dashboard'));
             new Dashboard($template);
-        } else
-            this.login(this);
+        } else {
+            Materialize.toast('Authorization not accepted!', 6000, 'red');
+            model.login(model);
+        }
     }
 
     register($this) {
@@ -47,6 +58,7 @@
     }
 
     login($this) {
+        debugger;
         $this.fromTemplate('LogIn').then(x => {
             var $template = $(x);
             new Identity($template);

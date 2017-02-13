@@ -197,19 +197,35 @@
     <Compile Include="Migrations\201702121927051_user_name.Designer.cs">
       <DependentUpon>201702121927051_user_name.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702130750019_pw.cs" />
+    <Compile Include="Migrations\201702130750019_pw.Designer.cs">
+      <DependentUpon>201702130750019_pw.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702131110439_transactions.cs" />
+    <Compile Include="Migrations\201702131110439_transactions.Designer.cs">
+      <DependentUpon>201702131110439_transactions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702131211561_total_in_transaction.cs" />
+    <Compile Include="Migrations\201702131211561_total_in_transaction.Designer.cs">
+      <DependentUpon>201702131211561_total_in_transaction.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Server\Controllers\AccountController.cs" />
     <Compile Include="Server\Controllers\AppController.cs" />
+    <Compile Include="Server\Controllers\BalanceController.cs" />
     <Compile Include="Server\Controllers\IdentityController.cs" />
     <Compile Include="Server\Controllers\TemplatesController.cs" />
+    <Compile Include="Server\Controllers\UsersController.cs" />
     <Compile Include="Server\Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Server\Models\AccountBindingModels.cs" />
-    <Compile Include="Server\Models\AccountViewModels.cs" />
+    <Compile Include="Server\Models\Transaction.cs" />
+    <Compile Include="Server\ViewModels\AccountBindingModels.cs" />
+    <Compile Include="Server\ViewModels\AccountViewModels.cs" />
     <Compile Include="Server\Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\ViewModels\TransactionViewModels.cs" />
     <Compile Include="Server\Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Server\Results\ChallengeResult.cs" />
     <Compile Include="Server\Startup.cs" />
@@ -217,6 +233,7 @@
   <ItemGroup>
     <Content Include="Client\img\icon.png" />
     <Content Include="Client\materialize\css\main.css" />
+    <Content Include="Client\ts\compiled.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Client\materialize\fonts\roboto\Roboto-Bold.eot" />
@@ -273,6 +290,9 @@
     <Content Include="Server\Views\Shared\_Layout.cshtml" />
     <Content Include="Server\Views\Templates\Registration.cshtml" />
     <Content Include="Server\Views\Templates\LogIn.cshtml" />
+    <Content Include="Server\Views\Templates\Dashboard.cshtml" />
+    <Content Include="Server\Views\Templates\Transactions.cshtml" />
+    <Content Include="Server\Views\Templates\TransactionHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -281,16 +301,21 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Client\ts\abstract\Binding.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\HtmlPusher.ts" />
+    <TypeScriptCompile Include="Client\ts\abstract\Request.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\ServerLinked.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\TemplateLoader.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\ValidationState.ts" />
     <TypeScriptCompile Include="Client\ts\abstract\ViewModel.ts" />
     <TypeScriptCompile Include="Client\ts\account.ts" />
     <TypeScriptCompile Include="Client\ts\app.ts" />
+    <TypeScriptCompile Include="Client\ts\bindings\NavBinding.ts" />
+    <TypeScriptCompile Include="Client\ts\bindings\TransactionsBinding.ts" />
     <TypeScriptCompile Include="Client\ts\interfaces\jqueryPromise.ts" />
     <TypeScriptCompile Include="Client\ts\interfaces\Materialize.ts" />
     <TypeScriptCompile Include="Client\ts\interfaces\string.ts" />
+    <TypeScriptCompile Include="Client\ts\models\Transactions.ts" />
     <TypeScriptCompile Include="Client\ts\models\Dashboard.ts" />
     <TypeScriptCompile Include="Client\ts\models\RegisterIdentity.ts" />
     <TypeScriptCompile Include="Client\ts\models\Identity.ts" />
@@ -305,6 +330,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702121927051_user_name.resx">
       <DependentUpon>201702121927051_user_name.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702130750019_pw.resx">
+      <DependentUpon>201702130750019_pw.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702131110439_transactions.resx">
+      <DependentUpon>201702131110439_transactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702131211561_total_in_transaction.resx">
+      <DependentUpon>201702131211561_total_in_transaction.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -9,6 +9,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using PWClient.ViewModels;
+using System.Security.Principal;
+using System.Web;
+using System.Threading;
 using PWClient.Models;
 
 namespace PWClient.Providers
@@ -48,7 +52,22 @@ namespace PWClient.Providers
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             var bitch = context.Validated(ticket);
             var z = bitch;
+
+            var identity = new GenericIdentity(context.UserName);
+            SetPrincipal(new GenericPrincipal(identity, null));
+
+            
+
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
+        }
+
+        private void SetPrincipal(IPrincipal principal)
+        {
+            Thread.CurrentPrincipal = principal;
+            if (HttpContext.Current != null)
+            {
+                HttpContext.Current.User = principal;
+            }
         }
 
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)

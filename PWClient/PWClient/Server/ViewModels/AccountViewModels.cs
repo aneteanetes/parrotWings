@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PWClient.Models
+namespace PWClient.ViewModels
 {
     // Models returned by AccountController actions.
 
